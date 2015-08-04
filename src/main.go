@@ -10,7 +10,7 @@ import "strings"
 import "os/exec"
 import "io/ioutil"
 import "time"
-
+import "encoding/json"
 
 
 type fileinf struct{
@@ -39,7 +39,7 @@ func readConfiguration() {
 	defer inputFile.Close()
 	scanner := bufio.NewScanner(inputFile)
  
-	// scanner.Scan() advances to the next token returning false if an error was encountered
+	// scanner.Scan() advances to the next token returning false if an or was encountered
 	for scanner.Scan() {
 		tokens := strings.Split(scanner.Text()," ")
 		read := true 
@@ -79,12 +79,12 @@ func readConfiguration() {
 }
 
 func readPrevRun() {
-/*	if _, err := os.Stat("/var/freezer/com.freezer.cache"); os.IsNotExists(err) {
-		if _, err := os.Stat("/etc/freezer/freezerfile"); os.IsNotExists(err) {
+	if _, err := os.Stat("/var/freezer/com.freezer.cache"); os.IsNotExist(err) {
+		if _, err := os.Stat("/etc/freezer/freezerfile"); os.IsNotExist(err) {
 			fmt.Println("No freezerfile found... starting manual configuration")
 			setup()
 		}
-	}*/
+	}
 }
 func shouldAnalyse(p string) (b bool) {
 	for e := IgnoredFiles.Front(); e != nil; e = e.Next() {
@@ -192,6 +192,7 @@ func main() {
 	fmt.Println("Freezer starting analysis")
 	readConfiguration()
 	analyse()
+
 	//TODO: count the number of arguments
 	/*
 	argsWithoutProg := os.Args[1:]
