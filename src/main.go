@@ -10,7 +10,7 @@ import "strings"
 import "os/exec"
 import "io/ioutil"
 import "time"
-//import "path"
+
 
 
 type fileinf struct{
@@ -93,8 +93,7 @@ func shouldAnalyse(p string) (b bool) {
 			if(strings.HasPrefix(p,pattern)){
 				return false
 			}
-		}
-		else{
+		}else{
 			if !ok {
 				return false
 			}
@@ -107,9 +106,22 @@ func shouldAnalyse(p string) (b bool) {
 			if matched {
 				return false
 			}
+			_,file :=filepath.Split(p)
+			matched, error = filepath.Match(file,p)
+			if matched {
+				return false
+			}
 		}
 	}
 	return true
+}
+func matchesExp(exp,path string){
+	/*array= new string[]
+	for i :=0; i<len(exp); i++{
+		if(exp){
+
+		}
+	}*/
 }
 func debianPkgExists(path string, stats os.FileInfo, err error) error /*(e error,b bool)*/ {
 	
@@ -135,7 +147,7 @@ func modifiedRecently(lastRun time.Time,stats os.FileInfo) {
 
 }
 func IsAllowed(name string) bool{
-	if(name == "etc"|| name == "dev"|| name == "proc" || name == "tmp" || name == "var" || name == "mnt" || name == "media" || name == "home" || name == "sys" || name == "root"){
+	if(name == "dev"|| name == "proc" || name == "tmp" || name == "var" || name == "mnt" || name == "media" || name == "home" || name == "sys" || name == "root"){
 		return false
 	}else {
 		return true
