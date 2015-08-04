@@ -10,7 +10,7 @@ import "strings"
 import "os/exec"
 import "io/ioutil"
 import "time"
-import "path"
+//import "path"
 
 
 type fileinf struct{
@@ -88,16 +88,25 @@ func readPrevRun() {
 }
 func shouldAnalyse(p string) (b bool) {
 	for e := IgnoredFiles.Front(); e != nil; e = e.Next() {
-		pattern, ok := e.Value.(string);
-		if !ok {
-			return false
+		pattern, ok := e.Value.(string)
+		if strings.HasSuffix(pattern,"/")&&(strings.Index(pattern,"*")<0){
+			if(strings.HasPrefix(p,pattern)){
+				return false
+			}
 		}
-	 	matched, error := path.Match(pattern,p)
-		if error != nil {
-			return false
-		}
-		if matched {
-			return false
+		else{
+			if !ok {
+				return false
+			}
+	 		matched, error := filepath.Match(pattern,p)
+	 		//fmt.Println(pattern+": "+p)
+	 		//fmt.Println(matched)
+			if error != nil {
+				return false
+			}
+			if matched {
+				return false
+			}
 		}
 	}
 	return true
@@ -126,7 +135,7 @@ func modifiedRecently(lastRun time.Time,stats os.FileInfo) {
 
 }
 func IsAllowed(name string) bool{
-	if(name == "dev"|| name == "proc" || name == "tmp" || name == "var" || name == "mnt" || name == "media" || name == "home" || name == "sys" || name == "root"){
+	if(name == "etc"|| name == "dev"|| name == "proc" || name == "tmp" || name == "var" || name == "mnt" || name == "media" || name == "home" || name == "sys" || name == "root"){
 		return false
 	}else {
 		return true
